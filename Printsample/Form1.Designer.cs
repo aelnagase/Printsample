@@ -33,6 +33,8 @@
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.printPreviewDialog1 = new System.Windows.Forms.PrintPreviewDialog();
             this.btnPrinTest = new System.Windows.Forms.Button();
+            this.btnExcelSheetList = new System.Windows.Forms.Button();
+            this.btnExcleRead = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnPrinterListUp
@@ -61,7 +63,7 @@
             // 
             // btnPrinTest
             // 
-            this.btnPrinTest.Location = new System.Drawing.Point(67, 120);
+            this.btnPrinTest.Location = new System.Drawing.Point(63, 88);
             this.btnPrinTest.Name = "btnPrinTest";
             this.btnPrinTest.Size = new System.Drawing.Size(150, 23);
             this.btnPrinTest.TabIndex = 1;
@@ -69,11 +71,33 @@
             this.btnPrinTest.UseVisualStyleBackColor = true;
             this.btnPrinTest.Click += new System.EventHandler(this.btnPrinTest_Click);
             // 
+            // btnExcelSheetList
+            // 
+            this.btnExcelSheetList.Location = new System.Drawing.Point(63, 136);
+            this.btnExcelSheetList.Name = "btnExcelSheetList";
+            this.btnExcelSheetList.Size = new System.Drawing.Size(150, 23);
+            this.btnExcelSheetList.TabIndex = 2;
+            this.btnExcelSheetList.Text = "Excel Sheet 一覧";
+            this.btnExcelSheetList.UseVisualStyleBackColor = true;
+            this.btnExcelSheetList.Click += new System.EventHandler(this.btnExcelSheetList_Click);
+            // 
+            // btnExcleRead
+            // 
+            this.btnExcleRead.Location = new System.Drawing.Point(63, 181);
+            this.btnExcleRead.Name = "btnExcleRead";
+            this.btnExcleRead.Size = new System.Drawing.Size(150, 23);
+            this.btnExcleRead.TabIndex = 3;
+            this.btnExcleRead.Text = "Excel Sheet1 Read";
+            this.btnExcleRead.UseVisualStyleBackColor = true;
+            this.btnExcleRead.Click += new System.EventHandler(this.btnExcleRead_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.btnExcleRead);
+            this.Controls.Add(this.btnExcelSheetList);
             this.Controls.Add(this.btnPrinTest);
             this.Controls.Add(this.btnPrinterListUp);
             this.Name = "Form1";
@@ -88,6 +112,8 @@
         private System.Drawing.Printing.PrintDocument printDocument1;
         private System.Windows.Forms.PrintPreviewDialog printPreviewDialog1;
         private System.Windows.Forms.Button btnPrinTest;
+        private System.Windows.Forms.Button btnExcelSheetList;
+        private System.Windows.Forms.Button btnExcleRead;
 
     }
 }

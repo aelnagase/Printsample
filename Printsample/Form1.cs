@@ -11,10 +11,23 @@ using System.Diagnostics;
 
 using System.Drawing.Printing;
 
+using Excel = Microsoft.Office.Interop.Excel;       // 参照の追加 COM　"Microsoft Excel ??.? Object Library"
+using System.Reflection;
+
 namespace Printsample
 {
     public partial class Form1 : Form
     {
+
+        private string sExcelFile = @"C:\NagDevelop2\Printsample\test.xlsx";
+        private Excel.Application oXls = null; // Excelオブジェクト
+        private Excel.Workbook oWBook = null;  // workbookオブジェクト
+        private Excel.Worksheet oSheet = null; // Worksheetオブジェクト
+
+        private object oMissing = System.Reflection.Missing.Value;
+        private object oTru = true;
+        private object oFal = false;
+
         public Form1()
         {
             InitializeComponent();
@@ -164,8 +177,142 @@ namespace Printsample
             e.HasMorePages = false;
         }
 
-       
-    
+
+        private void fnGetSheetList()
+        {
+
+            oXls = new Excel.Application();
+            oXls.Visible = false; // 確認のためExcelのウィンドウを表示する?
+
+            // Excelファイルをオープンする
+            oWBook = (Excel.Workbook)(oXls.Workbooks.Open(
+              sExcelFile,  // オープンするExcelファイル名
+              Type.Missing, // （省略可能）UpdateLinks (0 / 1 / 2 / 3)
+              oTru, // （省略可能）ReadOnly (True / False )
+              Type.Missing, // （省略可能）Format
+                // 1:タブ / 2:カンマ (,) / 3:スペース / 4:セミコロン (;)
+                // 5:なし / 6:引数 Delimiterで指定された文字
+              Type.Missing, // （省略可能）Password
+              Type.Missing, // （省略可能）WriteResPassword
+              Type.Missing, // （省略可能）IgnoreReadOnlyRecommended
+              Type.Missing, // （省略可能）Origin
+              Type.Missing, // （省略可能）Delimiter
+              Type.Missing, // （省略可能）Editable
+              Type.Missing, // （省略可能）Notify
+              Type.Missing, // （省略可能）Converter
+              Type.Missing, // （省略可能）AddToMru
+              Type.Missing, // （省略可能）Local
+              Type.Missing  // （省略可能）CorruptLoad
+            ));
+
+            // シート名の表示
+            foreach (Excel.Worksheet sh in oWBook.Sheets)
+            {
+                Debug.Print(sh.Name);
+            }
+
+            oWBook.Close(Type.Missing, Type.Missing, Type.Missing);
+            oXls.Quit();
+
+            oWBook = null;
+            oXls = null;
+
+        }
+
+        private void btnExcelSheetList_Click(object sender, EventArgs e)
+        {
+            fnGetSheetList();
+        }
+
+        private void btnExcleRead_Click(object sender, EventArgs e)
+        {
+            ReadTest();
+        }
+
+
+        private void ReadTest()
+        {
+            oXls = new Excel.Application();
+            oXls.Visible = false; // 確認のためExcelのウィンドウを表示する
+
+            // Excelファイルをオープンする
+            oWBook = (Excel.Workbook)(oXls.Workbooks.Open(
+              sExcelFile,  // オープンするExcelファイル名
+              Type.Missing, // （省略可能）UpdateLinks (0 / 1 / 2 / 3)
+              oTru, // （省略可能）ReadOnly (True / False )
+              Type.Missing, // （省略可能）Format
+                // 1:タブ / 2:カンマ (,) / 3:スペース / 4:セミコロン (;)
+                // 5:なし / 6:引数 Delimiterで指定された文字
+              Type.Missing, // （省略可能）Password
+              Type.Missing, // （省略可能）WriteResPassword
+              Type.Missing, // （省略可能）IgnoreReadOnlyRecommended
+              Type.Missing, // （省略可能）Origin
+              Type.Missing, // （省略可能）Delimiter
+              Type.Missing, // （省略可能）Editable
+              Type.Missing, // （省略可能）Notify
+              Type.Missing, // （省略可能）Converter
+              Type.Missing, // （省略可能）AddToMru
+              Type.Missing, // （省略可能）Local
+              Type.Missing  // （省略可能）CorruptLoad
+            ));
+
+            string sSheetName = "Sheet1";
+            int nIndex = getSheetIndex(sSheetName, oWBook.Sheets);
+
+            oSheet = (Excel.Worksheet)oWBook.Sheets[nIndex];
+
+            string sNo = "", sName = "", sKana = "", sSex = "", sBirth = "", sBusyo = "";
+            for (int nRow = 2; nRow < 1000; nRow++)
+            {
+                sNo = "";
+                sNo = fnGetExcelItem(nRow, 1);
+                if (sNo == "") break;
+                sName  = fnGetExcelItem(nRow, 2);
+                sKana  = fnGetExcelItem(nRow, 3);
+                sSex   = fnGetExcelItem(nRow, 4);
+                sBirth = fnGetExcelItem(nRow, 5);
+                sBusyo = fnGetExcelItem(nRow, 6);
+                Debug.Print(string.Format("{0} {1} {2} {3} {4} {5}", sNo , sName , sKana , sSex , sBirth , sBusyo));
+            }
+
+            oWBook.Close(Type.Missing, Type.Missing, Type.Missing);
+            oXls.Quit();
+        }
+
+
+        private String fnGetExcelItem(int nRow, int nCol)
+        {
+            Excel.Range rng; // Rangeオブジェクト
+            rng = (Excel.Range)oSheet.Cells[nRow, nCol];
+            return (rng.Text.ToString());
+        }
+
+
+        private int fnGetValueExcelItem(int nRow, int nCol)
+        {
+            Excel.Range rng; // Rangeオブジェクト
+            rng = (Excel.Range)oSheet.Cells[nRow, nCol];
+            int nRet = 0;
+            int.TryParse(rng.Value2.ToString(), out nRet);
+            return (nRet);
+        }
+
+
+
+        // 指定されたワークシート名のインデックスを返すメソッド
+        private int getSheetIndex(string sheetName, Excel.Sheets shs)
+        {
+            int i = 0;
+            foreach (Excel.Worksheet sh in shs)
+            {
+                if (sheetName == sh.Name)
+                {
+                    return i + 1;
+                }
+                i += 1;
+            }
+            return 0;
+        }
     }
 
     public class printItem
